@@ -1,13 +1,25 @@
-self.LPub = self.create_publisher(bool,"/led/left", 10)
-self.RPub = self.create_publisher(bool,"/led/right", 10)
+import rclpy
+from rclpy.node import Node
+from std_msgs.msg import Bool
 
-def ledSet(bool left, bool right):
-    
-    if left is True: lmsg = True
-    else: lmsg = False 
+class LedSet(Node):
+    def __init__(self):
+        super().__init__("led_set")
+
+        self.LPub = self.create_publisher(Bool,"/led/left", 10)
+        self.RPub = self.create_publisher(Bool,"/led/right", 10)
+
+    def ledSet(self, left, right):
         
-    if right is true: rmsg = True
-    else: rmsg = False 
+        if left is True: 
+            lmsg = True
+        else: 
+            lmsg = False 
+            
+        if right is True: 
+            rmsg = True
+        else: 
+            rmsg = False 
 
-    self.LPub.publish(lmsg)
-    self.RPub.publish(rmsg)
+        self.LPub.publish(lmsg)
+        self.RPub.publish(rmsg)
