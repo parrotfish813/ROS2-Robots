@@ -56,7 +56,6 @@ class Wander(Node):
                         self.all_laser_data.append(self.minrange)
                     else self.all_laser_data.append(self.laserdata)
                 else:
-            # Only append if the current value is not inf
                     if not math.isinf(self.laserdata[i]):
                         self.all_laser_data.append(self.laserdata[i])
 
