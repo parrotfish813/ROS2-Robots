@@ -54,10 +54,10 @@ class Wander(Node):
                         self.all_laser_data.append(self.maxrange)
                     elif self.laserdata[i-1] < self.maxrange / 2:
                         self.all_laser_data.append(self.minrange)
-                    else self.all_laser_data.append(self.laserdata)
+                    else:
+                        self.all_laser_data.append(self.laserdata)
                 else:
-                    if not math.isinf(self.laserdata[i]):
-                        self.all_laser_data.append(self.laserdata[i])
+                    self.all_laser_data.append(self.laserdata[i])
 
         angles_of_interest = [0, 90, 180, 270]
         index = self.angletoindex(math.floor(90 * math.pi / 180))
