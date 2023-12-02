@@ -28,45 +28,45 @@ class Wander(Node):
         self.lastBack = 0.0
         self.lastRight = 0.0
         self.lastLeft = 0.0
-        #self.get_logger().info('laser callback')
 
         # Initialize an empty list to collect laser data
         self.all_laser_data = []
-        cnt = 0
-        while math.isinf(self.laserdata[cnt]):
-            cnt += 1
-        temp = 0
-        if self.laserdata[cnt] > self.maxrange / 2:
-            temp = self.maxrange
-        else:
-            temp = self.minrange
-        
-        cnt2 = 0
-        while cnt2 < cnt:
-            self.laserdata[cnt2] = temp
-            cnt2 += 1
-        
-        for i in range(len(self.laserdata)):
-            if math.isinf(self.laserdata[i]):
-                if self.laserdata[i-1] > self.maxrange / 2:
-                    self.all_laser_data[i] = self.maxrange
+
+        # Handle the case where self.laserdata has zero length
+        if len(self.laserdata) > 0:
+            cnt = 0
+            while math.isinf(self.laserdata[cnt]):
+                cnt += 1
+            temp = 0
+            if self.laserdata[cnt] > self.maxrange / 2:
+                temp = self.maxrange
+            else:
+                temp = self.minrange
+            
+            cnt2 = 0
+            while cnt2 < cnt:
+                self.laserdata[cnt2] = temp
+                cnt2 += 1
+            
+            for i in range(1, len(self.laserdata)):
+                if math.isinf(self.laserdata[i]):
+                    if self.laserdata[i-1] > self.maxrange / 2:
+                        self.all_laser_data.append(self.maxrange)
+                elif self.laserdata[i-1] < self.maxrange / 2:
+                     self.all_laser_data.append(self.minrange)
                 else:
-                    self.all_laser_data[i] = self.minrange
-            self.all_laser_data[i - 1] = (self.laserdata[i])
+            # Only append if the current value is not inf
+                    if not math.isinf(self.laserdata[i]):
+                        self.all_laser_data.append(self.laserdata[i])
+
         angles_of_interest = [0, 90, 180, 270]
-        #for angle in angles_of_interest:
         index = self.angletoindex(math.floor(90 * math.pi / 180))
-        #if 0 <= index < len(self.all_laser_data):
-        self.get_logger().info(str(90) + ", index: "+str(index)+"= " + str(self.all_laser_data[index]))    
-            
-            
+        self.get_logger().info(str(90) + ", index: " + str(index) + "= " + str(self.all_laser_data[index]))
 
     def bot(self):
         # Print laser data values at specific angles
-        #print("Bot method called")
+        # print("Bot method called")
         pass
-        
-
 
     def angletoindex(self, angle):
         if self.deltaangle != 0:
