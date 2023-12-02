@@ -15,6 +15,7 @@ class Wander(Node):
         self.minrange = 0.0
         self.deltaangle = 0.0
         self.laserdata = 0.0
+        self.all_laser_data = []
         self.get_logger().info('KillBot node has been created.')
 
     def lasercallback(self, data):
@@ -27,51 +28,50 @@ class Wander(Node):
         self.lastBack = 0.0
         self.lastRight = 0.0
         self.lastLeft = 0.0
-        #for i in range(len(self.laserdata)):
-        #    if math.isinf(self.laserdata[i]):
-        #        self.laserdata[i] = self.maxrange        
 
         # Initialize an empty list to collect laser data
-        all_laser_data = []
-        cnt = 0
-        while math.isinf(self.laserdata[cnt]):
-            cnt += 1
-        temp = 0
-        if self.laserdata[cnt] > self.maxrange / 2:
-            temp = self.maxrange
-        else:
-            temp = self.minrange
-        
-        cnt2 = 0
-        while cnt2 < cnt:
-            self.laserdata[cnt2] = temp
-        
-        for i in range(len(self.laserdata)):
-            if math.isinf(self.laserdata[i]):
-            	if self.all_laser_data[i-1] > self.maxrange / 2:
-            		all_laser_data.append(self.maxrange)
-            	else:
-            		all_laser_data.append(0)
-            all_laser_data.append(self.laserdata[i])
+        self.all_laser_data = []
 
- 
+        # Handle the case where self.laserdata has zero length
+        if len(self.laserdata) > 0:
+            cnt = 0
+            while math.isinf(self.laserdata[cnt]):
+                cnt += 1
+            temp = 0
+            if self.laserdata[cnt] > self.maxrange / 2:
+                temp = self.maxrange
+            else:
+                temp = self.minrange
+            
+            cnt2 = 0
+            while cnt2 < cnt:
+                self.laserdata[cnt2] = temp
+                cnt2 += 1
+            
+            for i in range(1, len(self.laserdata)):
+                if math.isinf(self.laserdata[i]):
+                    if self.laserdata[i-1] > self.maxrange / 2:
+                        self.all_laser_data.append(self.maxrange)
+                elif self.laserdata[i-1] < self.maxrange / 2:
+                     self.all_laser_data.append(self.minrange)
+                else:
+            # Only append if the current value is not inf
+                    if not math.isinf(self.laserdata[i]):
+                        self.all_laser_data.append(self.laserdata[i])
+
         angles_of_interest = [0, 90, 180, 270]
-        last_angles = [self.lastFront, self.lastBack, self.lastRight, self.lastLeft]
-        for angle in angles_of_interest:
-            index = self.angletoindex(math.floor(angle * math.pi / 180))
-            
-            #if all_laser_data[index]:
-            self.get_logger().info(str(angle) + "= " + str(all_laser_data[index]))
-            
+        index = self.angletoindex(math.floor(90 * math.pi / 180))
+        self.get_logger().info(str(90) + ", index: " + str(index) + "= " + str(self.all_laser_data[index]))
 
     def bot(self):
         # Print laser data values at specific angles
+        # print("Bot method called")
         pass
 
     def angletoindex(self, angle):
         if self.deltaangle != 0:
             index = math.floor((angle - self.minangle) / self.deltaangle)
-            return max(0, min(index, len(self.laserdata) - 1))
+            return index
         return 0
 
     def indextoangle(self, index):
