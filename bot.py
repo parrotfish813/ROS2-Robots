@@ -54,7 +54,8 @@ class Wander(Node):
                         self.saniLaser.append(self.maxrange)
                     elif self.laserdata[i-1] < self.maxrange / 2:
                         self.saniLaser.append(self.minrange)
-                    else self.saniLaser.append(self.laserdata)
+                    else:
+                        self.saniLaser.append(self.laserdata)
                 else:
                     self.saniLaser.append(self.laserdata[i])
 
