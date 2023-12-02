@@ -52,10 +52,9 @@ class Wander(Node):
                 if math.isinf(self.laserdata[i]):
                     if self.laserdata[i-1] > self.maxrange / 2:
                         self.all_laser_data.append(self.maxrange)
-                elif self.laserdata[i-1] < self.maxrange / 2:
-                     self.all_laser_data.append(self.minrange)
+                    elif self.laserdata[i-1] < self.maxrange / 2:
+                        self.all_laser_data.append(self.minrange)
                 else:
-            # Only append if the current value is not inf
                     if not math.isinf(self.laserdata[i]):
                         self.all_laser_data.append(self.laserdata[i])
 
